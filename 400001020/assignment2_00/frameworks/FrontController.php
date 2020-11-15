@@ -15,8 +15,13 @@ class FrontController extends AbstractFrontController{
 	 }
     protected function handleRequest(){
 			$context = new CommandContext();
-			//$req = (string)$context->get('request');
-			$handler = RequestHandlerFactory :: makeRequestHandler();
+			$get = $context->get('get');
+			$request = $get['controller'];
+
+			if(empty($request)){
+				$request = "index";
+			}
+			$handler = RequestHandlerFactory :: makeRequestHandler($request);
 			
 			if($handler->execute($context)===false){
 				//add error message

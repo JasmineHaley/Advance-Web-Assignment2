@@ -1,12 +1,26 @@
 <?php
-class LoginController extends AbstractController{
+namespace Apps\handlers;
+use Quwius\Framework\CommandContext;
+use Quwius\Framework\Observable_Model;
+use Quwius\Framework\AbstractCommandPageController;
+use Quwius\Framework\View;
+class LoginController extends AbstractCommandPageController{
 	private $errors=[];
-	public function run(){
-		SessionManager::create();
+	protected function makeModel () :Observable_Model{
+	return new  \LoginModel();
+	}
+
+	protected function makeView() : View{
 		$v = new View();
 		$v->setTemplate(TPL_DIR. '/login.tpl.php');
-		$this->setView($v);
-		$this->setModel(new LoginModel());
+		return $v;
+	}
+
+	public function run(){
+		SessionManager::create();
+		$this->model = $this->makeModel();
+		 $this->view = $this->makeView();
+		
 		$this->model->attach($this->view);
 	if(!(empty($_POST))){
 		if($this->auth($_POST['email'],$_POST['password'])){

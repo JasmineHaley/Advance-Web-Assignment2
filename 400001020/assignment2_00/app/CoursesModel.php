@@ -1,4 +1,6 @@
 <?php
+namespace Apps\handlers;
+use Quwius\Framework\Observable_Model;
 //require'autoloader.php';
 class CoursesModel extends Observable_Model {
 	

@@ -1,17 +1,38 @@
 <?php
-class SignUpController extends AbstractController{
+namespace Apps\handlers;
+use Quwius\Framework\CommandContext;
+use Quwius\Framework\Observable_Model;
+use Quwius\Framework\AbstractCommandPageController;
+use Quwius\Framework\Validator;
+use Quwius\Framework\View;
+
+class SignUpController extends AbstractCommandPageController{
 	private $errors=[];
-	public function run(){
+	private $data = null;
+	protected function makeModel () :Observable_Model{
+	return new \SignUpModel();
+	}
+
+	protected function makeView() : View{
 		$v = new View();
 		$v->setTemplate(TPL_DIR.  '/signup.tpl.php');
-		$this->setView($v);
-		$this->setModel(new SignUpModel());
+		return $v;
+	}
+	public function run(){
+	
+		
+		$this->model = $this->makeModel();
+		 $this->view = $this->makeView();
+		
+
 		$this->model->attach($this->view);
 
 		if(!(empty($_POST))){
-			if($this->validEmail($_POST['email']) && $this->validPassword($_POST['password'],$_POST['repassword'])){
+			$validator = new Validator();
+			if($validator->validEmail($_POST['email']) && $validator->validPassword($_POST['password'],$_POST['repassword'])){
+
 				$user = array('name'=>$_POST['formFullName'],'email'=>$_POST['email'],'password'=> $_POST['password']);
-				$data = $this->model->addRecord($user);
+				$data = $this->model->insert($user);
 
 				$session = new SessionManager();
 				$session->setPages($this->model->getAll());
@@ -23,44 +44,20 @@ class SignUpController extends AbstractController{
 			}
 		}else{
 		
-		$v->display();
+		$this->view->display();
 		}
 		
 	}
-	public function validEmail($email):bool{
-		if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
-       			 $this->errors['email']='INVALID EMAIL FORMAT';
-        	return false;
-			}
-			return true;
-	}
-	public function validPassword($password,$repassword):bool{
-		if (strlen($password) < 10 ) {
-  	  		$this->errors["lengtherror"] = "Password should be min 10 characters ";
-  	  		return false;
-		}
-		if (!preg_match("/\d/", $password)) {
-   			 $this->errors["number"] = "Password should contain at least one digit";
-   			 return false;
-		}
-		if (!preg_match("/[A-Z]/", $password)) {
-    	$this->errors["capital"] = "Password should contain at least one Capital Letter";
-    	return false;
-		}
-		if (preg_match("/\s/", $password)) {
-    	$this->errors["whitespace"] = "Password should not contain any white space";
-    	return false;
-		}if ($password != $repassword) {
-    	$this->errors["duplicate"] = "The passwords entered do not match";
-    	return false;
-		}
+	public function execute (CommandContext $context):bool{
+		$this->data = $context;
+		$this->run();
 		return true;
 	}
-	public function setErrorMessages(array $errors){
+	/*public function setErrorMessages(array $errors){
 	if (!empty($errors)){
 		$this->errors=$errors;
 	}
-	}
+	}*/
 }
 	
 ?>

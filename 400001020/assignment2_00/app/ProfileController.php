@@ -1,16 +1,27 @@
 <?php
-class ProfileController extends AbstractController{
+namespace Apps\handlers;
+use Quwius\Framework\CommandContext;
+use Quwius\Framework\Observable_Model;
+use Quwius\Framework\AbstractCommandPageController;
+use Quwius\Framework\View;
+class ProfileController extends AbstractCommandPageControlle{
+	protected function makeModel () :Observable_Model{
+	return new \ProfileModel();
+	}
 
+	protected function makeView() : View{
+		$v = new View();
+		$v->setTemplate(TPL_DIR. '/profile.tpl.php');
+		return $v;
+	}
 
 	public function run(){
 		SessionManager::create();
 		$session = new SessionManager();
-	
 
-		$v = new View();
-		$v->setTemplate(TPL_DIR. '/profile.tpl.php');
-		$this->setModel(new ProfileModel());
-		$this->setView($v);
+		$this->model = $this->makeModel();
+		 $this->view = $this->makeView();
+		
 
 		$this->model->attach($this->view);
 

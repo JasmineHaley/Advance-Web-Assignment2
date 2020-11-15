@@ -33,15 +33,16 @@
 			<?php
 				$i =-1;
 				foreach ($popular as $k=>$c):
+					
 					$i++;
 					if (($i % 4)==0):
 			?>
 				<div class="centered">
 			<?php endif;?>
 				<section>
-				<a href="#"><img src="images/<?php echo $c[4]?>" alt="<?php echo $c[0]?>" title="<?php echo $c[0]?>">
+				<a href="#"><img src="images/<?php echo $c[1]?>" alt="<?php echo $c[0]?>" title="<?php echo $c[0]?>">
 				<span class="course-title"><?php echo $c[0]?></span>
-				<span><?php echo $instructors[$c[0]]?></span></a>
+				<span><?php echo $c["instructor_name"]?></span></a>
 				</section>
 				<?php 
 				if(($i % 4)== 3):?>
@@ -60,9 +61,9 @@
 				<div class="centered">
 			<?php endif;?>
 				<section>
-				<a href="#"><img src="images/<?php echo $r[4]?>" alt="<?php echo $r[0]?>" title="<?php echo $r[0]?>">
+				<a href="#"><img src="images/<?php echo $r[1]?>" alt="<?php echo $r[0]?>" title="<?php echo $r[0]?>">
 				<span class="course-title"><?php echo $r[0]?></span>
-				<span><?php echo $instructors[$r[0]]?></span></a>
+				<span><?php echo $r[2]?></span></a>
 				</section>
 				<?php 
 				if(($i % 4)== 3):?>
