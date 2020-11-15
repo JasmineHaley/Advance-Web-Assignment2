@@ -22,7 +22,7 @@ namespace Quwius\Framework;
 		$servername = "localhost";
 		$username = "root";
 		$password = "";
-		$dbname = "Quwius";
+		$dbname = "mooc";
 
 		// Create connection
 		$conn = mysqli_connect($servername, $username, $password, $dbname);
