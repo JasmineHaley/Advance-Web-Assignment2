@@ -1,42 +1,40 @@
 <?php
-namespace Apps\handlers;
+//namespace Apps\handlers;
 use Quwius\Framework\Observable_Model;
 //require'autoloader.php';
 class CoursesModel extends Observable_Model {
 	
-	public function getAll():array{
-	$dept=json_decode($this->loadData('faculty_department'),true);
-	$courses=json_decode($this->loadData('courses'),true);
-	$dept_courses=json_decode($this->loadData('faculty_dept_courses'),true);
-	$instructor=json_decode($this->loadData('instructor'),true);
-	$course_instructor=json_decode($this->loadData('course_instructor'),true);
+	public function findAll():array{
+	$conn=$this->makeConnection();
 
-	$c=  array();
- 	
- 	
-	for($i = 1;$i <= count($dept_courses["faculty_dept_courses"]);$i++){
-		
-		for($j =0; $j < count($dept_courses["faculty_dept_courses"][$i]);$j++){
-
-			$c[]=  array($dept["faculty_department"][$i],$courses["courses"][$dept_courses["faculty_dept_courses"][$i][$j]][0],$courses["courses"][$dept_courses["faculty_dept_courses"][$i][$j]][4],$instructor["instructors"][$course_instructor["course_instructor"][$dept_courses["faculty_dept_courses"][$i][$j]]]);
-		}
-	}
+	$sql1= "SELECT * FROM faculty_dept_courses";
+	$query = mysqli_query($conn,$sql1);
 	
+	while($faculty_dept_courses = mysqli_fetch_array($query,MYSQLI_ASSOC)){
+		$sql2="SELECT faculty_dept_name FROM faculty_department WHERE faculty_dept_id =".$faculty_dept_courses["faculty_dept_id"];
+		$sql3="SELECT course_name,course_image FROM courses WHERE course_id = ".$faculty_dept_courses["course_id"];
+		$sql4="SELECT instructor_name FROM instructors WHERE instructor_id= (SELECT instructor_id FROM course_instructor WHERE course_id =". $faculty_dept_courses['course_id'].")" ;
+
+		$faculty_name_query=mysqli_query($conn,$sql2);
+		$course_query=mysqli_query($conn,$sql3);
+		//var_dump($course_query);
+		$instructor_query = mysqli_query($conn,$sql4);
+
+		$faculty_name=mysqli_fetch_array($faculty_name_query,MYSQLI_ASSOC);
+		$course=mysqli_fetch_array($course_query,MYSQLI_ASSOC);
+		$instructor=mysqli_fetch_array($instructor_query,MYSQLI_ASSOC);
+		//var_dump($instructor["instructor_name"]);
+		$c[]=array($faculty_name["faculty_dept_name"],$course["course_name"],$course["course_image"],$instructor["instructor_name"]);
+
+	}
+	//var_dump($c);
 	return ['courses'=>$c];
 	
  		
 	}
 	
-	public function getRecord(string $id):array{
-		$json = file_get_contents("courses.json");
-
- 		$obj = json_decode($json,true);
-
-		foreach ($obj['courses'] as $x=>$item) {
-    		if ($item['id'] === $id)
-    		 return $item;
-  		}
+	public function findRecord(string $id):array{
+			return [];
 	}
-
 }
 ?>

@@ -4,8 +4,10 @@ use Quwius\Framework\CommandContext;
 use Quwius\Framework\Observable_Model;
 use Quwius\Framework\AbstractCommandPageController;
 use Quwius\Framework\View;
+use Quwius\Framework\SessionManager;
 class CoursesController extends AbstractCommandPageController{
-protected function makeModel () :Observable_Model{
+	private $data = null;
+	protected function makeModel () :Observable_Model{
 	return new  \CoursesModel();
 	}
 
@@ -19,24 +21,28 @@ protected function makeModel () :Observable_Model{
 		SessionManager::create();
 		$session = new SessionManager(); 
 
-		$v = new View();
+		$this->model = $this->makeModel();
+		$this->view = $this->makeView();
 		
-		$this->setView($v);
-		$this->setModel(new CoursesModel());
-		$this->model->attach($this->view);
 		
 		$user = $session->getSession('users');
 		if($session->accessible($user,'profile')){
-			$data=$this->model->getAll();
+		$this->model->attach($this->view);
+		$data=$this->model->findAll();
 
 		$this->model->updateData($data);
 		//tells the model to contact its observers
 		$this->model->notify();
 		
 	}else{
-		$v->setTemplate(TPL_DIR. '/login.tpl.php');
-		$v->display();
+		$this->view->setTemplate(TPL_DIR.  '/login.tpl.php');
+		//$this->view->display();
 	}	
+	}
+	 public function execute (CommandContext $context):bool{
+		$this->data = $context;
+		$this->run();
+		return true;
 	}
 	
 }

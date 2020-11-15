@@ -4,8 +4,10 @@ use Quwius\Framework\CommandContext;
 use Quwius\Framework\Observable_Model;
 use Quwius\Framework\AbstractCommandPageController;
 use Quwius\Framework\View;
+use Quwius\Framework\SessionManager;
 class LoginController extends AbstractCommandPageController{
 	private $errors=[];
+	private $data = null;
 	protected function makeModel () :Observable_Model{
 	return new  \LoginModel();
 	}
@@ -24,10 +26,10 @@ class LoginController extends AbstractCommandPageController{
 		$this->model->attach($this->view);
 	if(!(empty($_POST))){
 		if($this->auth($_POST['email'],$_POST['password'])){
-			$records = $this->model->getRecord($_POST['email']);
+			$records = $this->model->findRecord($_POST['email']);
          	 $session = new SessionManager();
             $session->add('users',$records["name"]);
-            $session->setPages($this->model->getAll());
+            $session->setPages($this->model->findAll());
          	 
 			header('Location: profile.php');
 			exit();
@@ -39,7 +41,7 @@ class LoginController extends AbstractCommandPageController{
 		}
 	}else{
 		
-		$v->display();
+		$this->view->display();
 	}
 }
 public function auth(String $email,String $password):bool
@@ -67,6 +69,11 @@ public function auth(String $email,String $password):bool
                  
            
         }
+  public function execute (CommandContext $context):bool{
+		$this->data = $context;
+		$this->run();
+		return true;
+	}
 public function setErrorMessages(array $errors){
 	if (!empty($errors)){
 		$this->errors=$errors;

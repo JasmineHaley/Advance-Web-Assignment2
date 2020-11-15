@@ -1,31 +1,29 @@
 <?php
-namespace Apps\handlers;
+//namespace Apps\handlers;
 use Quwius\Framework\Observable_Model;
 //require'autoloader.php';
 class LoginModel extends Observable_Model {
 	
-	public function getAll():array{
-	$json=json_decode($this->loadData('users'),true);
-		$users=[];
-		for($i = 0; $i < (count($json)-1);$i++){
-			$users[$i]= $json[$i]["name"];
- 		}
+	public function findAll():array{
+    $conn=$this->makeConnection();
+	$sql= "SELECT * FROM users ";
+	$result = mysqli_query($conn, $sql);
+
+		while($row = mysqli_fetch_array($result,MYSQLI_ASSOC)){
+			$users[]=$row["name"];
+		}
+ 		
  		
  		return $users;
 	}
 
-	public function getRecord(string $id):array{
-		$users=json_decode($this->loadData('hashedUsers'),true);
-		//echo var_dump($users['user'][1][1]);
-		$person=[];
-		for($i = 0;$i < (count($users)-1);$i++){
-				if($users[$i]["email"]==$id){
-					
-					$person=$users[$i];
-			}	
-		}
+	public function findRecord(string $id):array{
+		$conn=$this->makeConnection();
+
+		$sql1= "SELECT * FROM users WHERE email ='$id'";
+		$result = mysqli_query($conn, $sql);
 		
-	return $person;
+		return mysqli_fetch_array($result,MYSQLI_ASSOC);
 }
 
 }

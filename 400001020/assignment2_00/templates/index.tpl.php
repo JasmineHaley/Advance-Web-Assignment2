@@ -42,7 +42,7 @@
 				<section>
 				<a href="#"><img src="images/<?php echo $c[1]?>" alt="<?php echo $c[0]?>" title="<?php echo $c[0]?>">
 				<span class="course-title"><?php echo $c[0]?></span>
-				<span><?php echo $c["instructor_name"]?></span></a>
+				<span><?php echo $c[2]?></span></a>
 				</section>
 				<?php 
 				if(($i % 4)== 3):?>
