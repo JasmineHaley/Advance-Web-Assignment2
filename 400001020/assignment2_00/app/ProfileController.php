@@ -35,8 +35,8 @@ class ProfileController extends AbstractCommandPageControlle{
 			//tells the model to contact its observers
 			$this->model->notify();
 	}else{
-		$v->setTemplate(TPL_DIR. '/login.tpl.php');
-		$v->display();
+		$this->view->setTemplate(TPL_DIR. '/login.tpl.php');
+		$this->view->display();
 	}
 		
 		

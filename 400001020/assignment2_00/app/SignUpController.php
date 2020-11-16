@@ -37,7 +37,9 @@ class SignUpController extends AbstractCommandPageController{
 				$session = new SessionManager();
 				$session->setPages($this->model->getAll());
 
-				header("login.php");
+				$this->view->setTemplate(TPL_DIR. '/login.tpl.php');
+			$this->model = new \loginModel();
+			$this->model->attach($this->view);
 			}else{
 				$this->view->addVar('errors',$this->errors);
 				$this->view->display();

@@ -31,7 +31,9 @@ class LoginController extends AbstractCommandPageController{
             $session->add('users',$records["name"]);
             $session->setPages($this->model->findAll());
          	 
-			header('Location: profile.php');
+			$this->view->setTemplate(TPL_DIR. '/profile.tpl.php');
+			$this->model = new \ProfileModel();
+			$this->model->attach($this->view);
 			exit();
 		}
 		else{

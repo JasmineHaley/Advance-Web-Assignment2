@@ -22,11 +22,10 @@ class IndexModel extends Observable_Model {
 			$sql3="SELECT instructor_name FROM instructors WHERE instructor_id= (SELECT instructor_id FROM course_instructor WHERE course_id =". $recommendation_column['course_id'].")" ;
 			$instructors_query =  mysqli_query($conn,$sql3);
 			$instructor_column=mysqli_fetch_array($instructors_query,MYSQLI_ASSOC);
-			//var_dump($instructor_column);
 			$recommended[]=array($recommendation_column["course_name"],$recommendation_column["course_image"],$instructor_column["instructor_name"]);
 		}
 		$recommended=array_slice($recommended,0,8);
-		//var_dump($recommended);
+		
 		while($popular_column = mysqli_fetch_array($popular_query,MYSQLI_ASSOC)){
 			
 			$sql4="SELECT instructor_name FROM instructors WHERE instructor_id= (SELECT instructor_id FROM course_instructor WHERE course_id =". $popular_column['course_id'].")" ;
